@@ -1,0 +1,6 @@
+{
+	"name": "BVH2Clip",
+	"references": [
+		"BVHParserLib"
+	]
+}
