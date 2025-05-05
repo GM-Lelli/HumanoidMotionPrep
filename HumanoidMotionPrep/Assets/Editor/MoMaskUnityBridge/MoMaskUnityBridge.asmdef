@@ -1,0 +1,6 @@
+{
+	"name": "MoMaskUnityBridge",
+	"references": [
+		"BVH2Clip"
+	]
+}

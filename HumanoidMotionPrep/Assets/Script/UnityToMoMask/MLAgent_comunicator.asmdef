@@ -1,6 +1,0 @@
-{
-	"name": "MLAgent_comunicator",
-	"references": [
-		"BVH2Clip"
-	]
-}
