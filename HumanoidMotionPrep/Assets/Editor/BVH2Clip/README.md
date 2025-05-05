@@ -1,55 +1,78 @@
-# Documentazione del Convertitore BVH
+# BVH Converter Documentation
 
-## Panoramica
-Questa documentazione descrive il funzionamento del sistema di conversione dei file BVH in `AnimationClip` utilizzando Unity. Il sistema è costituito da due file principali: `BVH2ClipEditor.cs` e `BVHConverter.cs`, che lavorano insieme per consentire agli utenti di importare file BVH e convertirli in animazioni utilizzabili all'interno di Unity.
+## Overview
 
-### Classi principali
-1. **BVH2ClipEditor**: Fornisce un'interfaccia utente nell'editor di Unity per configurare e avviare il processo di conversione.
-2. **BVHConverter**: Gestisce la logica effettiva per la conversione dei file BVH in `AnimationClip`.
+This documentation explains how the system for converting BVH files into `AnimationClip`s in Unity works. The system is composed of two main scripts: `BVH2ClipEditor.cs` and `BVHConverter.cs`, which work together to allow users to import BVH files and convert them into usable animations within Unity.
 
-## Classe BVH2ClipEditor
-La classe `BVH2ClipEditor` fornisce una finestra nell'editor di Unity per configurare e avviare la conversione dei file BVH in `AnimationClip`. Questa finestra consente agli utenti di selezionare una cartella contenente i file BVH, di specificare la directory di output e di scegliere se rispettare il tempo di frame definito nel file BVH o di utilizzare un frame rate personalizzato.
+### Main Classes
 
-- **Descrizione**:
-  - Fornisce una finestra dell'editor accessibile dal menu "Tools > BVH to AnimationClip".
-  - Permette di selezionare una cartella contenente file BVH e di visualizzare il percorso della cartella di output.
-  - Consente di scegliere tra rispettare il tempo di frame del file BVH originale (`respectBVHTime`) o impostare un frame rate personalizzato (`frameRate`).
-- **Utilizzo**:
-  - Per avviare la finestra del convertitore BVH, l'utente deve selezionare "Tools > BVH to AnimationClip" dal menu di Unity.
-  - Dopo aver selezionato la cartella BVH, l'utente può avviare la conversione premendo il pulsante "Convert BVH to AnimationClip".
+1. **BVH2ClipEditor**: Provides a Unity Editor UI to configure and launch the conversion process.
+2. **BVHConverter**: Handles the actual logic for converting BVH files into `AnimationClip`s.
 
-## Classe BVHConverter
-La classe `BVHConverter` si occupa della logica di conversione dei file BVH in `AnimationClip`. Prende in ingresso una serie di parametri dalla finestra dell'editor, come il percorso dei file BVH, la directory di salvataggio e il frame rate. Questa classe è responsabile della creazione delle clip di animazione e della gestione delle curve di posizione e rotazione per ogni osso.
+---
 
-- **Descrizione**:
-  - Prende in ingresso una cartella contenente file BVH e una directory di output per le animazioni convertite.
-  - Converte ogni file BVH in un `AnimationClip` utilizzabile in Unity.
-  - Utilizza la classe `BVHParser` per estrarre i dati necessari per la conversione.
-- **Metodo principale**:
-  ```csharp
+## BVH2ClipEditor Class
+
+The `BVH2ClipEditor` class provides an editor window in Unity to configure and start the conversion of BVH files into `AnimationClip`s. This window allows users to select a folder containing BVH files, specify the output directory, and choose whether to respect the original frame time defined in the BVH file or use a custom frame rate.
+
+- **Description**:
+  - Provides an editor window accessible from the menu "Tools > BVH to AnimationClip".
+  - Allows selection of a folder containing BVH files and displays the path of the output directory.
+  - Offers a choice between using the BVH file's original frame time (`respectBVHTime`) or a user-defined frame rate (`frameRate`).
+
+- **Usage**:
+  - To open the BVH converter window, go to "Tools > BVH to AnimationClip" in Unity.
+  - After selecting the BVH folder, click the "Convert BVH to AnimationClip" button to start the process.
+
+---
+
+## BVHConverter Class
+
+The `BVHConverter` class manages the logic for converting BVH files into `AnimationClip`s. It receives several parameters from the editor window such as the input BVH path, the output folder, and the frame rate. This class is responsible for creating animation clips and generating position and rotation curves for each joint.
+
+- **Description**:
+  - Takes a folder of BVH files and an output directory as input.
+  - Converts each BVH file into a usable `AnimationClip` in Unity.
+  - Uses the `BVHParser` class to extract the necessary data for the conversion.
+
+- **Main Method**:
+```csharp
   public void ConvertBVHToAnimationClip()
-  ```
-  Questo metodo gestisce la lettura dei file BVH, la creazione delle `AnimationClip`, l'aggiunta delle curve per la posizione e la rotazione, e infine il salvataggio delle clip nella directory specificata.
-- **Funzionalità principali**:
-  - **Percorsi dei file**: Legge i file BVH dalla cartella specificata e salva le animazioni nella directory di output.
-  - **Conversione frame**: Se `respectBVHTime` è abilitato, la classe utilizza il tempo di frame del file BVH. Altrimenti, viene utilizzato un frame rate personalizzato specificato dall'utente.
-  - **Rotazioni e posizioni**: Utilizza i dati estratti per creare curve di animazione per le posizioni e rotazioni locali di ogni osso.
-  - **Salvataggio dei file**: Dopo aver creato l'`AnimationClip`, il file viene salvato nella directory specificata utilizzando `AssetDatabase.CreateAsset()`.
+````
 
-### Metodo `GetCurves`
-Il metodo `GetCurves` viene utilizzato per generare le curve di animazione per ogni giunto del personaggio.
-- **Descrizione**:
-  - Prende in ingresso il percorso del giunto, il nodo del parser BVH (`BVHBone`), e l'`AnimationClip` su cui aggiungere le curve.
-  - Estrae i valori di posizione e rotazione dai canali del file BVH e li converte in curve di animazione che vengono poi applicate alla clip.
-- **Rotazione con `fromEulerZXY`**: Le rotazioni vengono convertite utilizzando l'ordine ZXY, per garantire che i dati delle rotazioni BVH siano correttamente rappresentati come `Quaternion` in Unity.
+This method handles reading the BVH files, creating `AnimationClip`s, adding position and rotation curves, and saving the clips to the specified directory.
+
+* **Key Features**:
+
+  * **File paths**: Reads BVH files from the selected folder and saves the resulting animations in the output folder.
+  * **Frame conversion**: If `respectBVHTime` is enabled, the frame time from the BVH file is used. Otherwise, a custom frame rate is applied.
+  * **Rotations and positions**: Extracted data is used to create local position and rotation curves for each joint.
+  * **Saving files**: Once created, each `AnimationClip` is saved using `AssetDatabase.CreateAsset()`.
+
+---
+
+### `GetCurves` Method
+
+The `GetCurves` method is used to generate animation curves for each joint in the character.
+
+* **Description**:
+
+  * Takes as input the joint path, the `BVHBone` node from the parser, and the `AnimationClip` to which the curves will be added.
+  * Extracts position and rotation values from the BVH channels and converts them into animation curves to be applied to the clip.
+
+* **Rotation using `fromEulerZXY`**: Rotations are converted using the ZXY order to ensure that BVH rotation data is accurately represented as `Quaternion`s in Unity.
 
 ```csharp
 private void GetCurves(string path, BVHParser.BVHBone node, AnimationClip clip)
 ```
-Questo metodo aggiunge le curve di posizione e rotazione per ogni giunto all'`AnimationClip`, permettendo la creazione di animazioni realistiche.
 
-## Sommario
-- **Interfaccia utente**: La classe `BVH2ClipEditor` fornisce un'interfaccia grafica nell'editor di Unity per facilitare l'importazione e la conversione dei file BVH.
-- **Conversione animazioni**: La classe `BVHConverter` gestisce l'intero processo di conversione, dalla lettura dei file BVH, all'estrazione dei dati, fino alla creazione delle animazioni.
+This method adds the position and rotation curves for each joint to the `AnimationClip`, allowing for the creation of realistic animations.
 
-Questi file lavorano insieme per permettere agli utenti di convertire facilmente file BVH in `AnimationClip` e utilizzarli nei loro progetti Unity, consentendo di importare animazioni realistiche da fonti esterne.
+---
+
+## Summary
+
+* **User Interface**: The `BVH2ClipEditor` class provides a GUI in the Unity Editor to simplify importing and converting BVH files.
+* **Animation Conversion**: The `BVHConverter` class manages the complete process, from reading BVH files to generating and saving animation clips.
+
+Together, these scripts allow users to easily convert BVH files into `AnimationClip`s and use them in their Unity projects, enabling the import of realistic animations from external sources.
